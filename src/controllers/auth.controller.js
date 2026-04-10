@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const tokenBlacklistModel = require("../models/blacklist.model")
 
 /**
  * @name registerUserController
@@ -41,7 +42,11 @@ async function registerUserController(req, res) {
     { expiresIn: "1d" }
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+});
 
   res.status(201).json({
     message: "User Registered Successfully",
@@ -83,7 +88,11 @@ async function loginUserController(req, res) {
     { expiresIn: "1d" }
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+});
 
   res.status(200).json({
     message: "User loggedIn Successfully",
@@ -95,7 +104,30 @@ async function loginUserController(req, res) {
   });
 }
 
+/**
+ * @name logUserController
+ */
+async function logoutUserController(req,res) {
+    const token = req.cookies.token
+    
+    if(!token){
+      return res.status(400).json({
+        message: "No token Found"
+      });
+    }
+    await tokenBlacklistModel.create({ token })
+
+  res.clearCookie("token"); // optional but recommended
+
+  res.status(200).json({
+    message: "User logged out successfully"
+  });
+}
+
+
+
 module.exports = {
   registerUserController,
-  loginUserController
+  loginUserController,
+  logoutUserController
 };
