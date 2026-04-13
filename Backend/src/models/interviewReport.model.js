@@ -114,11 +114,11 @@ const interviewReportSchema = new mongoose.Schema({
     selfDescription: String,
     jobDescription: String,
 
-    // ✅ FIXED STRUCTURE
-    technicalQuestions: [String],
-    behavioralQuestions: [String],
-    skillGaps: [String],
-    preparationPlan: [String]
+    technicalQuestions: [technicalQuestionSchema],
+    behavioralQuestions: [behavioralQuestionSchema],
+    skillGaps: [skillGapSchema],
+    preparationPlan: [preparationPlanSchema],
+    matchScore: Number
 
 }, { timestamps: true })
 
