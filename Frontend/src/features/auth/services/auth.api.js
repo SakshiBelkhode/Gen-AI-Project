@@ -57,6 +57,8 @@ export async function getMe() {
 
         const response = await api.get("/api/auth/get-me")
 
+        console.log(response.data.user)
+
         return response.data
 
     } catch (err) {
